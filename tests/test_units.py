@@ -1,4 +1,5 @@
 import math
+
 from verity.fusion import weighted_rrf
 from verity.metrics import hit_at_k, latency_summary, mrr_at_k, ndcg_at_k, recall_at_k
 from verity.text import SparseEncoder, tokens

@@ -6,6 +6,7 @@
   NOTE: not executed in the build sandbox (no HuggingFace access); verify on first run.
 """
 from __future__ import annotations
+
 from pathlib import Path
 from typing import Protocol
 
@@ -35,7 +36,7 @@ class LSAEncoder:
                                    max_features=max_features, dtype=np.float32)
         self.svd = TruncatedSVD(dim, n_iter=4, random_state=42)
 
-    def fit(self, texts: list[str]) -> "LSAEncoder":
+    def fit(self, texts: list[str]) -> LSAEncoder:
         matrix = self.vec.fit_transform(texts)
         self.dim = min(self.dim, matrix.shape[0], matrix.shape[1])
         self.name = f"LSA-{self.dim} (offline fallback)"
@@ -53,7 +54,7 @@ class LSAEncoder:
         joblib.dump(self, path)
 
     @staticmethod
-    def load(path: Path) -> "LSAEncoder":
+    def load(path: Path) -> LSAEncoder:
         return joblib.load(path)
 
 

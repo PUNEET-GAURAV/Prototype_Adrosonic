@@ -4,9 +4,10 @@ Both hybrid legs run in parallel with the SAME database-level filter, then are f
 (weighted RRF) so the fusion method and weights are explicit, documented and configurable.
 """
 from __future__ import annotations
+
 import time
 from concurrent.futures import ThreadPoolExecutor
-from dataclasses import dataclass, field, asdict
+from dataclasses import asdict, dataclass, field
 
 from .fusion import weighted_rrf
 from .store import Store

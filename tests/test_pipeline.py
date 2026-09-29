@@ -1,5 +1,6 @@
 """End-to-end on an in-memory Qdrant: filters are pre-retrieval, live upsert/delete work, hybrid returns per-leg ranks."""
 import pytest
+
 from verity.config import load_config
 from verity.encoders import LSAEncoder
 from verity.retrieval import Pipeline

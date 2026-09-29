@@ -1,10 +1,12 @@
-import streamlit as st
-import requests
-import subprocess
-import time
-import socket
-import sys
 import os
+import socket
+import subprocess
+import sys
+import time
+
+import requests
+import streamlit as st
+
 
 @st.cache_resource
 def start_backend():
@@ -18,7 +20,7 @@ def start_backend():
         env = os.environ.copy()
         env["PYTHONPATH"] = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
         # We start the backend and keep it running in the background.
-        proc = subprocess.Popen([sys.executable, "-m", "uvicorn", "verity.api:app", "--host", "127.0.0.1", "--port", "8000"], env=env)
+        subprocess.Popen([sys.executable, "-m", "uvicorn", "verity.api:app", "--host", "127.0.0.1", "--port", "8000"], env=env)
         # Wait up to 30 seconds for the port to open
         for _ in range(30):
             if is_port_in_use(8000):
@@ -56,7 +58,7 @@ if st.button("Search"):
                     st.write(h["text"])
             else:
                 st.error(f"Error: {r_dense.text}")
-        except Exception as e:
+        except requests.RequestException as e:
             st.error(f"Failed to connect: {e}")
             
     with col2:
@@ -70,5 +72,5 @@ if st.button("Search"):
                     st.write(h["text"])
             else:
                 st.error(f"Error: {r_hybrid.text}")
-        except Exception as e:
+        except requests.RequestException as e:
             st.error(f"Failed to connect: {e}")
