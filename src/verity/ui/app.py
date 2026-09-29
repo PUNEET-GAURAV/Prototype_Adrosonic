@@ -16,11 +16,16 @@ def start_backend():
         print("Starting FastAPI backend...")
         # Ensure 'src' is in PYTHONPATH so uvicorn can find verity.api
         env = os.environ.copy()
-        env["PYTHONPATH"] = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+        src_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+        env["PYTHONPATH"] = src_path
         # We start the backend and keep it running in the background.
-        proc = subprocess.Popen([sys.executable, "-m", "uvicorn", "verity.api:app", "--host", "127.0.0.1", "--port", "8000"], env=env)
-        # Wait up to 30 seconds for the port to open
-        for _ in range(30):
+        proc = subprocess.Popen([sys.executable, "-m", "uvicorn", "verity.api:app", "--host", "127.0.0.1", "--port", "8000"], env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        # Wait up to 60 seconds for the port to open (models take time to load)
+        for _ in range(60):
+            if proc.poll() is not None:
+                err = proc.stderr.read().decode()
+                print(f"Backend failed to start: {err}")
+                break
             if is_port_in_use(8000):
                 print("FastAPI backend started successfully.")
                 break
