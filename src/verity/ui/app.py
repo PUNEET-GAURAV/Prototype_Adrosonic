@@ -1,5 +1,37 @@
 import streamlit as st
 import requests
+import subprocess
+import time
+import socket
+import sys
+import os
+
+@st.cache_resource
+def start_backend():
+    def is_port_in_use(port):
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            return s.connect_ex(('localhost', port)) == 0
+
+    if not is_port_in_use(8000):
+        print("Starting FastAPI backend...")
+        # Ensure 'src' is in PYTHONPATH so uvicorn can find verity.api
+        env = os.environ.copy()
+        env["PYTHONPATH"] = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+        # We start the backend and keep it running in the background.
+        proc = subprocess.Popen([sys.executable, "-m", "uvicorn", "verity.api:app", "--host", "127.0.0.1", "--port", "8000"], env=env)
+        # Wait up to 30 seconds for the port to open
+        for _ in range(30):
+            if is_port_in_use(8000):
+                print("FastAPI backend started successfully.")
+                break
+            time.sleep(1)
+        else:
+            print("Warning: FastAPI backend did not start in time.")
+    else:
+        print("FastAPI backend is already running on port 8000.")
+    return True
+
+start_backend()
 
 st.set_page_config(page_title="Verity-RAG Judge Demo", layout="wide")
 
@@ -40,4 +72,3 @@ if st.button("Search"):
                 st.error(f"Error: {r_hybrid.text}")
         except Exception as e:
             st.error(f"Failed to connect: {e}")
-

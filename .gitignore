@@ -1,7 +1,7 @@
 __pycache__/
 *.pyc
 .venv/
-qdrant_storage/
+qdrant_storage/.lock
 .env
 data/
 *.pptx

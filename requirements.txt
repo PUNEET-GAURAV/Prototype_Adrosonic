@@ -8,3 +8,8 @@ nltk
 pyyaml
 httpx
 pytest
+streamlit
+requests
+sentence-transformers
+datasets
+pydantic
