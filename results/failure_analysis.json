@@ -1,0 +1,18 @@
+{
+  "failure_modes": [
+    {
+      "query": "Where do bananas grow?",
+      "expected_answer": "In tropical regions",
+      "retrieved_context": "Bananas are yellow.",
+      "failure_type": "Context Recall Failure",
+      "reason": "The sparse search did not match the specific terms for tropical regions, and dense search prioritized visual descriptions of bananas."
+    },
+    {
+      "query": "Who wrote Hamlet?",
+      "expected_answer": "William Shakespeare",
+      "retrieved_context": "The Lion King is loosely based on Hamlet.",
+      "failure_type": "Context Precision Failure",
+      "reason": "The top hits are pop culture references rather than historical authors."
+    }
+  ]
+}

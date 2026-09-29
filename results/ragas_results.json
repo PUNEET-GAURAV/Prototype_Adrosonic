@@ -1,0 +1,10 @@
+{
+  "dense": {
+    "Custom_LLMContextPrecision": 0.2000,
+    "Custom_LLMContextRecall": 0.2200
+  },
+  "hybrid": {
+    "Custom_LLMContextPrecision": 0.1000,
+    "Custom_LLMContextRecall": 0.2000
+  }
+}

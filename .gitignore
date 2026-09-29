@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+.venv/
+qdrant_storage/
+.env
+data/
+*.pptx
+build_out*.txt

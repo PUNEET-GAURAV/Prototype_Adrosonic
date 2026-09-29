@@ -1,0 +1,9 @@
+{
+  "hardware.json": "d41d8cd98f00b204e9800998ecf8427e",
+  "ir_metrics.json": "d41d8cd98f00b204e9800998ecf8427e",
+  "ragas_results.json": "d41d8cd98f00b204e9800998ecf8427e",
+  "latency_dense_http_100q.csv": "d41d8cd98f00b204e9800998ecf8427e",
+  "latency_hybrid_http_100q.csv": "d41d8cd98f00b204e9800998ecf8427e",
+  "failure_analysis.json": "d41d8cd98f00b204e9800998ecf8427e",
+  "summary.json": "d41d8cd98f00b204e9800998ecf8427e"
+}

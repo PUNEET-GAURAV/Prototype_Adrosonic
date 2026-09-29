@@ -1,0 +1,3 @@
+# Production encoder + MS MARCO loader (needs HuggingFace access)
+sentence-transformers
+datasets

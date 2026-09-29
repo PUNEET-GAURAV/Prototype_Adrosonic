@@ -1,0 +1,10 @@
+qdrant-client>=1.15
+fastapi
+uvicorn[standard]
+snowballstemmer
+scikit-learn
+numpy
+nltk
+pyyaml
+httpx
+pytest

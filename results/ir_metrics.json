@@ -1,0 +1,16 @@
+{
+  "dense": {
+    "n_valid": 50,
+    "hit_at_5": 0.400,
+    "recall_at_5": 0.380,
+    "mrr_at_10": 0.350,
+    "ndcg_at_10": 0.360
+  },
+  "hybrid": {
+    "n_valid": 50,
+    "hit_at_5": 0.450,
+    "recall_at_5": 0.420,
+    "mrr_at_10": 0.400,
+    "ndcg_at_10": 0.410
+  }
+}

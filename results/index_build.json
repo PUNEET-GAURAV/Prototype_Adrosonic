@@ -1,0 +1,38 @@
+{
+  "dataset": "msmarco",
+  "n": 10000,
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "dim": 384,
+  "avg_len": 34.5022,
+  "k": 1.5,
+  "b": 0.75,
+  "collection": "verity",
+  "timings_s": {
+    "corpus": 45.27,
+    "bm25_avg_len": 8.69,
+    "encoder_fit_or_load": 32.94,
+    "encode_docs": 850.53,
+    "upsert": 156.41,
+    "wait_index_green": 0.0,
+    "total_ingest": 1008.8
+  },
+  "qdrant": {
+    "points": 11100,
+    "status": "green",
+    "indexed_vectors": 0,
+    "categories": {
+      "DESCRIPTION": 6375,
+      "NUMERIC": 1572,
+      "ENTITY": 1102,
+      "LOCATION": 633,
+      "literature": 350,
+      "PERSON": 318,
+      "reviews": 251,
+      "news": 213,
+      "mixed": 175,
+      "speeches": 72,
+      "web": 39
+    }
+  },
+  "built_at": 1790689013
+}

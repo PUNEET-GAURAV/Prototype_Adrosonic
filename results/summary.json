@@ -1,0 +1,188 @@
+{
+  "protocol": "20 warm-up (excluded) + 100 distinct sequential queries, concurrency 1, no cache, k=5",
+  "hardware": {
+    "python": "3.12.3",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "machine": "x86_64",
+    "cpu": "Intel(R) Xeon(R) Processor @ 2.80GHz",
+    "cores": 1,
+    "ram_gb": 4.1
+  },
+  "index": {
+    "dataset": "demo",
+    "n": 100000,
+    "encoder": "LSA-128 (offline fallback)",
+    "dim": 128,
+    "avg_len": 35.32221,
+    "k": 1.2,
+    "b": 0.75,
+    "collection": "verity",
+    "timings_s": {
+      "corpus": 12.62,
+      "bm25_avg_len": 5.53,
+      "encoder_fit_or_load": 8.77,
+      "encode_docs": 12.33,
+      "upsert": 32.91,
+      "wait_index_green": 36.07,
+      "total_ingest": 97.36
+    },
+    "qdrant": {
+      "points": 100000,
+      "status": "green",
+      "indexed_vectors": 200000,
+      "categories": {
+        "literature": 30597,
+        "reviews": 22900,
+        "news": 20096,
+        "mixed": 15514,
+        "speeches": 7291,
+        "web": 3602
+      }
+    },
+    "built_at": 1790677753
+  },
+  "latency": {
+    "dense": {
+      "http_end_to_end": {
+        "n": 100,
+        "mean": 22.400490000000005,
+        "p50": 22.2635,
+        "p95": 27.452149999999993,
+        "p99": 33.187160000000006,
+        "max": 33.401,
+        "budget_ms": 300.0,
+        "pass": true,
+        "percentile_method": "numpy linear interpolation"
+      },
+      "server_pipeline": {
+        "n": 100,
+        "mean": 20.20965,
+        "p50": 20.0375,
+        "p95": 25.052149999999997,
+        "p99": 30.13378,
+        "max": 30.409,
+        "budget_ms": 300.0,
+        "pass": true,
+        "percentile_method": "numpy linear interpolation"
+      }
+    },
+    "sparse": {
+      "http_end_to_end": {
+        "n": 100,
+        "mean": 2.9764400000000006,
+        "p50": 2.6775,
+        "p95": 4.18415,
+        "p99": 4.8011800000000004,
+        "max": 4.819,
+        "budget_ms": 300.0,
+        "pass": true,
+        "percentile_method": "numpy linear interpolation"
+      },
+      "server_pipeline": {
+        "n": 100,
+        "mean": 1.44806,
+        "p50": 1.3395000000000001,
+        "p95": 2.0553000000000003,
+        "p99": 2.313850000000001,
+        "max": 2.497,
+        "budget_ms": 300.0,
+        "pass": true,
+        "percentile_method": "numpy linear interpolation"
+      }
+    },
+    "hybrid": {
+      "http_end_to_end": {
+        "n": 100,
+        "mean": 30.431000000000004,
+        "p50": 28.683500000000002,
+        "p95": 44.36429999999999,
+        "p99": 44.935770000000005,
+        "max": 45.507,
+        "budget_ms": 300.0,
+        "pass": true,
+        "percentile_method": "numpy linear interpolation"
+      },
+      "server_pipeline": {
+        "n": 100,
+        "mean": 28.052820000000008,
+        "p50": 26.368499999999997,
+        "p95": 41.284949999999995,
+        "p99": 42.07403,
+        "max": 42.671,
+        "budget_ms": 300.0,
+        "pass": true,
+        "percentile_method": "numpy linear interpolation"
+      }
+    }
+  },
+  "ann_fidelity_overlap_at_5": {
+    "mean": 0.9783333333333334,
+    "min": 0.0,
+    "queries": 120,
+    "note": "min=0.0 is a stopword-only query that encodes to a zero vector (no meaningful neighbours)"
+  },
+  "live_updates": {
+    "upserts": 15,
+    "upsert_ms_mean": 22.39585506666667,
+    "upsert_ms_p95": 29.3700819,
+    "rank_of_new_passage_by_sparse_weight (None = outside top-5)": {
+      "w_sparse=1.0": [
+        2,
+        3,
+        3,
+        3,
+        3,
+        2,
+        1,
+        2,
+        2,
+        2,
+        4,
+        2,
+        null,
+        2,
+        1
+      ],
+      "w_sparse=2.0": [
+        1,
+        2,
+        2,
+        2,
+        2,
+        2,
+        1,
+        1,
+        2,
+        2,
+        3,
+        1,
+        2,
+        1,
+        1
+      ],
+      "w_sparse=3.0": [
+        1,
+        2,
+        2,
+        2,
+        1,
+        2,
+        1,
+        1,
+        2,
+        2,
+        3,
+        1,
+        2,
+        1,
+        1
+      ]
+    },
+    "all_found_at_rank_1": false,
+    "points_before": 100000,
+    "points_after_upsert": 100015,
+    "points_after_delete": 100000,
+    "restored": true,
+    "deleted_passages_absent_from_results": true
+  }
+}

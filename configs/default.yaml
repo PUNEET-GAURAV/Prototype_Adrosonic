@@ -1,0 +1,26 @@
+retrieval:
+  k: 5
+  depth: 50
+  w_dense: 1.0
+  w_sparse: 1.0
+  rrf_k: 60
+  rerank_depth: 20
+
+encoder:
+  dense: bge
+  bge_model: BAAI/bge-small-en-v1.5
+  lsa_dim: 128
+  sparse: bm25
+  avg_len: 30 # MS MARCO measured short passage length
+
+sparse:
+  k: 1.5
+  b: 0.75
+
+data:
+  n_passages: 100000
+  seeds: 42
+
+qdrant:
+  collection: "verity"
+  path: "qdrant_storage"

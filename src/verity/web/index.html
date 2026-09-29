@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Verity-RAG · precision retrieval prototype</title>
+<style>
+:root{--bg:#0A1521;--panel:#10233A;--panel2:#152D48;--line:#23425F;--text:#E8EFF7;--muted:#8FA6BC;
+--teal:#2CC7D3;--amber:#F5A524;--green:#3DD68C;--red:#F0605D;--violet:#9B8CF8}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"Segoe UI",system-ui,-apple-system,Roboto,"Helvetica Neue",Arial,sans-serif;font-size:15px}
+header{display:flex;align-items:center;gap:16px;padding:18px 32px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.logo{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,var(--teal),#0E7C86);display:grid;place-items:center;font-weight:800;color:#06222a;font-size:20px}
+h1{font-size:20px;margin:0;letter-spacing:.2px}h1 small{display:block;font-size:12px;color:var(--muted);font-weight:400;margin-top:2px}
+.badges{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.badge{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:12.5px;color:var(--muted)}
+.badge b{color:var(--text)}.badge.ok b{color:var(--green)}
+nav{display:flex;gap:4px;padding:0 32px;border-bottom:1px solid var(--line)}
+nav button{background:none;border:0;color:var(--muted);padding:14px 18px;font-size:14.5px;cursor:pointer;border-bottom:2px solid transparent}
+nav button.on{color:var(--text);border-color:var(--teal)}
+main{padding:24px 32px 40px;max-width:1360px;margin:0 auto}
+.tab{display:none}.tab.on{display:block}
+.bar{display:flex;gap:10px}
+.bar input{flex:1;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:15px 18px;color:var(--text);font-size:17px;outline:none}
+.bar input:focus{border-color:var(--teal)}
+.btn{background:var(--teal);color:#05222a;border:0;border-radius:12px;padding:0 26px;font-weight:700;font-size:15px;cursor:pointer}
+.btn.sec{background:var(--panel2);color:var(--text);border:1px solid var(--line)}
+.row{display:flex;gap:16px;align-items:center;margin:14px 0;flex-wrap:wrap}
+.seg{display:inline-flex;background:var(--panel);border:1px solid var(--line);border-radius:11px;overflow:hidden}
+.seg button{background:none;border:0;color:var(--muted);padding:9px 16px;cursor:pointer;font-size:14px}
+.seg button.on{background:var(--panel2);color:var(--text);box-shadow:inset 0 -2px 0 var(--teal)}
+.chip{display:inline-block;padding:5px 12px;border-radius:999px;border:1px solid var(--line);background:var(--panel);color:var(--muted);font-size:13px;cursor:pointer;user-select:none}
+.chip.on{background:#0E4B55;border-color:var(--teal);color:#D9F7FA}
+.lbl{color:var(--muted);font-size:12.5px;text-transform:uppercase;letter-spacing:.8px}
+select{background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:9px;padding:7px 10px}
+.meta{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 16px;color:var(--muted);font-size:13px}
+.meta .t{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:4px 10px}.meta .t b{color:var(--text)}
+.meta .tot{border-color:var(--teal)}.meta .tot b{color:var(--teal)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.colh{font-weight:700;margin:2px 0 10px;display:flex;align-items:center;gap:10px}
+.colh span{font-size:12px;color:var(--muted);font-weight:400}
+.card{display:flex;gap:14px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:10px}
+.rank{width:30px;height:30px;flex:none;border-radius:9px;background:var(--panel2);display:grid;place-items:center;font-weight:800;color:var(--teal)}
+.card .body{flex:1;min-width:0}
+.txt{line-height:1.5;color:#D4DFEA;font-size:14.5px}
+mark{background:rgba(245,165,36,.28);color:#FFE2A8;border-radius:3px;padding:0 2px}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px;font-size:12px;align-items:center}
+.tag{border-radius:6px;padding:2px 8px;background:var(--panel2);color:var(--muted)}
+.tag.cat{color:#B8C7FF}.tag.d{background:rgba(44,199,211,.15);color:var(--teal)}.tag.s{background:rgba(245,165,36,.15);color:var(--amber)}
+.tag.up{background:rgba(61,214,140,.16);color:var(--green)}.tag.new{background:rgba(155,140,248,.18);color:var(--violet)}.tag.down{background:rgba(240,96,93,.15);color:var(--red)}
+.score{font-variant-numeric:tabular-nums;color:var(--muted);font-size:12px;margin-left:auto}
+.empty{color:var(--muted);padding:40px;text-align:center;border:1px dashed var(--line);border-radius:14px}
+.tiles{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:18px 0}
+.tile{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px}
+.tile .v{font-size:30px;font-weight:800;font-variant-numeric:tabular-nums}.tile .k{color:var(--muted);font-size:12.5px;margin-top:4px}
+.pass{color:var(--green)}.fail{color:var(--red)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}
+textarea{width:100%;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:12px;font:inherit;min-height:90px}
+input.sm{background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:9px;padding:9px 12px;font:inherit}
+.note{color:var(--muted);font-size:13px;margin-top:10px;line-height:1.5}
+.log{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;color:#BFD0E0;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px;margin-top:12px;white-space:pre-wrap}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">V</div>
+  <h1>Verity-RAG<small>Hybrid precision retrieval on Qdrant · prototype</small></h1>
+  <div class="badges" id="badges"></div>
+</header>
+<nav>
+  <button class="on" data-tab="search">Search</button>
+  <button data-tab="bench">Latency benchmark</button>
+  <button data-tab="live">Live updates</button>
+</nav>
+<main>
+<section class="tab on" id="tab-search">
+  <div class="bar"><input id="q" placeholder="Ask a question or type keywords…" value="Ahab whale"><button class="btn" id="go">Search</button></div>
+  <div class="row">
+    <span class="lbl">Method</span>
+    <div class="seg" id="modes">
+      <button data-m="dense">Dense · Phase 1</button><button data-m="hybrid" class="on">Hybrid · Phase 2</button>
+      <button data-m="sparse">BM25 only</button><button data-m="compare">Compare</button></div>
+    <span class="lbl" style="margin-left:8px">Filter</span><span id="cats"></span>
+    <select id="origin"><option value="">all origins</option><option value="demo">corpus</option><option value="live_upsert">live upserts</option></select>
+  </div>
+  <div class="row" style="margin-top:0"><span class="lbl">Try</span>
+    <span class="chip" data-ex="Ahab whale">Ahab whale</span>
+    <span class="chip" data-ex="president promises to lower taxes">president promises to lower taxes</span>
+    <span class="chip" data-ex="OPEC oil production quota">OPEC oil production quota</span></div>
+  <div class="meta" id="meta"></div>
+  <div id="results"><div class="empty">Run a query to see the top-5 passages with per-leg ranks and scores.</div></div>
+</section>
+
+<section class="tab" id="tab-bench">
+  <div class="row"><span class="lbl">Mode</span>
+    <select id="bmode"><option value="hybrid">hybrid</option><option value="dense">dense</option><option value="sparse">BM25 only</option></select>
+    <button class="btn" style="padding:12px 22px" id="runbench">Run 100-query benchmark</button>
+    <span class="note" id="bstat" style="margin:0"></span></div>
+  <div class="tiles" id="tiles"></div>
+  <div class="panel"><div class="lbl" style="margin-bottom:8px">Latency distribution · 100 consecutive queries · 20 warm-up excluded</div><svg id="hist" width="100%" height="260" viewBox="0 0 1200 260" preserveAspectRatio="none"></svg></div>
+  <div class="note">Server-side pipeline time per query (embed → both legs in parallel → fusion → top-5), measured on this machine, sequential, no result cache. The p95 budget is 300 ms.</div>
+</section>
+
+<section class="tab" id="tab-live">
+  <div class="grid2">
+    <div class="panel">
+      <div class="colh">Add or update a passage <span>no re-indexing of the corpus</span></div>
+      <textarea id="ltext">The Zorbland-7 protocol lets field engineers recalibrate a deep-sea pressure gauge without surfacing the submersible.</textarea>
+      <div class="row"><input class="sm" id="lcat" value="live" style="width:110px"><button class="btn" style="padding:10px 20px" id="ladd">Upsert</button>
+        <input class="sm" id="lid" placeholder="passage id" style="width:170px"><button class="btn sec" style="padding:10px 20px" id="ldel">Delete by id</button></div>
+      <div class="log" id="llog">Waiting…</div>
+    </div>
+    <div class="panel">
+      <div class="colh">Query the live index <span>hybrid, top-3</span></div>
+      <div class="bar"><input id="lq" value="Zorbland-7 pressure gauge"><button class="btn sec" id="lgo">Search</button></div>
+      <div id="lres" style="margin-top:14px"></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let mode='hybrid', cats=new Set(), STOP=new Set('the a an and of to in is are for on with what how who when where which that this it as by at from'.split(' '));
+const api=(p,b,m)=>fetch(p,{method:m||(b?'POST':'GET'),headers:{'Content-Type':'application/json'},body:b?JSON.stringify(b):undefined}).then(r=>r.json());
+function hl(text,q){let t=esc(text);const ws=[...new Set(q.toLowerCase().match(/[a-z0-9-]+/g)||[])].filter(w=>w.length>2&&!STOP.has(w));
+  if(!ws.length)return t;const re=new RegExp('\\b('+ws.map(w=>w.slice(0,Math.max(3,w.length-2)).replace(/[-]/g,'\\-')).join('|')+')\\w*','gi');return t.replace(re,m=>'<mark>'+m+'</mark>')}
+function card(h,i,q,showMove){const r=h.ranks||{},s=h.scores||{};let t='';
+  if(r.dense)t+=`<span class="tag d">dense #${r.dense} · ${s.dense.toFixed(3)}</span>`;
+  if(r.sparse)t+=`<span class="tag s">BM25 #${r.sparse} · ${s.sparse.toFixed(1)}</span>`;
+  if(showMove&&h.move&&h.move!=='same')t+=`<span class="tag ${h.move}">${{up:'▲ promoted vs dense',down:'▼ demoted',new:'★ new vs dense'}[h.move]}</span>`;
+  return `<div class="card"><div class="rank">${i+1}</div><div class="body"><div class="txt">${hl(h.text.length>330?h.text.slice(0,330)+'…':h.text,q)}</div>
+  <div class="tags"><span class="tag cat">${esc(h.category)}</span><span class="tag">${esc(h.source)}</span><span class="tag">${h.passage_id}</span>${t}<span class="score">${h.score.toFixed(h.ranks.dense&&h.ranks.sparse?4:3)}</span></div></div></div>`}
+function meta(t){const o=[['embed','embed_ms'],['tokenize','tokenize_ms'],['dense leg','dense_ms'],['BM25 leg','sparse_ms'],['fusion','fuse_ms']].filter(x=>t[x[1]]!==undefined);
+  return o.map(x=>`<span class="t">${x[0]} <b>${t[x[1]].toFixed(1)} ms</b></span>`).join('')+`<span class="t tot">total <b>${t.total_ms.toFixed(1)} ms</b></span>`}
+function body(){const q=$('#q').value.trim();return{query:q,mode:mode==='compare'?'hybrid':mode,k:5,categories:cats.size?[...cats]:null,origin:$('#origin').value||null}}
+async function run(){const b=body();if(!b.query)return;
+  if(mode==='compare'){const r=await api('/compare',b);
+    $('#meta').innerHTML=`<span class="t">Same query, same filter, same index</span><span class="t">dense <b>${r.dense.timings.total_ms.toFixed(1)} ms</b></span><span class="t tot">hybrid <b>${r.hybrid.timings.total_ms.toFixed(1)} ms</b></span>`;
+    $('#results').innerHTML=`<div class="grid2"><div><div class="colh">Dense only <span>Phase 1 baseline</span></div>${r.dense.hits.map((h,i)=>card(h,i,b.query,false)).join('')}</div>
+    <div><div class="colh">Hybrid <span>dense + BM25, weighted RRF</span></div>${r.hybrid.hits.map((h,i)=>card(h,i,b.query,true)).join('')}</div></div>`;return}
+  const r=await api('/search',b);$('#meta').innerHTML=meta(r.timings);
+  $('#results').innerHTML=r.hits.length?r.hits.map((h,i)=>card(h,i,b.query,false)).join(''):'<div class="empty">No passages match this filter.</div>'}
+async function init(){const s=await api('/stats');
+  $('#badges').innerHTML=`<span class="badge ok">index <b>${s.status}</b></span><span class="badge"><b>${s.points.toLocaleString()}</b> passages</span><span class="badge">dense: <b>${s.encoder}</b></span><span class="badge">BM25 avg_len <b>${s.avg_len.toFixed(1)}</b></span>`;
+  $('#cats').innerHTML=Object.entries(s.categories).sort((a,b)=>b[1]-a[1]).map(([c,n])=>`<span class="chip" data-c="${c}">${c} · ${n.toLocaleString()}</span>`).join(' ');
+  $$('#cats .chip').forEach(e=>e.onclick=()=>{const c=e.dataset.c;cats.has(c)?cats.delete(c):cats.add(c);e.classList.toggle('on');run()});run()}
+$('#go').onclick=run;$('#q').onkeydown=e=>{if(e.key==='Enter')run()};$('#origin').onchange=run;
+$$('#modes button').forEach(b=>b.onclick=()=>{mode=b.dataset.m;$$('#modes button').forEach(x=>x.classList.toggle('on',x===b));run()});
+$$('[data-ex]').forEach(e=>e.onclick=()=>{$('#q').value=e.dataset.ex;run()});
+$$('nav button').forEach(b=>b.onclick=()=>{$$('nav button').forEach(x=>x.classList.toggle('on',x===b));$$('.tab').forEach(t=>t.classList.toggle('on',t.id==='tab-'+b.dataset.tab))});
+function hist(ms,p95){const W=1200,H=260,pad=34,mx=Math.max(320,Math.max(...ms)*1.05),bins=40,c=Array(bins).fill(0);ms.forEach(v=>c[Math.min(bins-1,Math.floor(v/mx*bins))]++);const m=Math.max(...c),bw=(W-2*pad)/bins;
+  let s='';c.forEach((n,i)=>{const h=n/m*(H-70);s+=`<rect x="${pad+i*bw+1}" y="${H-32-h}" width="${bw-2}" height="${h}" rx="3" fill="#2CC7D3" opacity=".85"/>`});
+  const X=v=>pad+v/mx*(W-2*pad);s+=`<line x1="${X(300)}" x2="${X(300)}" y1="14" y2="${H-32}" stroke="#F0605D" stroke-width="2" stroke-dasharray="6 5"/><text x="${X(300)-8}" y="26" fill="#F0605D" font-size="14" text-anchor="end">300 ms budget</text>`;
+  s+=`<line x1="${X(p95)}" x2="${X(p95)}" y1="40" y2="${H-32}" stroke="#F5A524" stroke-width="2"/><text x="${X(p95)+8}" y="52" fill="#F5A524" font-size="14">p95 ${p95.toFixed(1)} ms</text>`;
+  s+=`<line x1="${pad}" x2="${W-pad}" y1="${H-32}" y2="${H-32}" stroke="#23425F"/>`;[0,100,200,300].forEach(v=>{if(v<mx)s+=`<text x="${X(v)}" y="${H-10}" fill="#8FA6BC" font-size="13" text-anchor="middle">${v} ms</text>`});$('#hist').innerHTML=s}
+$('#runbench').onclick=async()=>{$('#bstat').textContent='Running 20 warm-up + 100 sequential queries…';const m=$('#bmode').value;const r=await api('/bench?mode='+m+'&n=100',null,'POST');const s=r.summary;$('#bstat').textContent='';
+  const T=[['p50',s.p50],['p95',s.p95],['p99',s.p99],['max',s.max]].map(([k,v])=>`<div class="tile"><div class="v">${v.toFixed(1)}<span style="font-size:15px;color:var(--muted)"> ms</span></div><div class="k">${k}</div></div>`).join('');
+  $('#tiles').innerHTML=T+`<div class="tile"><div class="v ${s.pass?'pass':'fail'}">${s.pass?'PASS':'FAIL'}</div><div class="k">p95 < 300 ms · n=${s.n} · ${r.points.toLocaleString()} passages</div></div>`;hist(r.latencies_ms,s.p95)};
+$('#ladd').onclick=async()=>{const r=await api('/upsert',{text:$('#ltext').value,category:$('#lcat').value||'live'});$('#lid').value=r.passage_id;
+  $('#llog').textContent=`UPSERT ok\npassage_id: ${r.passage_id}\nupsert time: ${r.upsert_ms.toFixed(1)} ms (embed + write, wait=true)\nrank when queried by its own text: #${r.rank_when_queried_by_own_text}\nindex size: ${r.points.toLocaleString()} passages`;lsearch()};
+$('#ldel').onclick=async()=>{const id=$('#lid').value.trim();if(!id)return;const r=await api('/passages/'+encodeURIComponent(id),null,'DELETE');$('#llog').textContent=`DELETE ok\npassage_id: ${r.deleted}\nindex size: ${r.points.toLocaleString()} passages (no re-index)`;lsearch()};
+async function lsearch(){const q=$('#lq').value;const r=await api('/search',{query:q,mode:'hybrid',k:3});$('#lres').innerHTML=r.hits.map((h,i)=>card(h,i,q,false)).join('')+`<div class="meta"><span class="t tot">total <b>${r.timings.total_ms.toFixed(1)} ms</b></span></div>`}
+$('#lgo').onclick=lsearch;init();
+</script>
+</body>
+</html>
