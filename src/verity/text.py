@@ -6,6 +6,7 @@ Query side: weight 1 per unique term. Qdrant multiplies by IDF at query time fro
 corpus, so scores stay correct after upserts and deletes, and filters apply to this leg too.
 """
 from __future__ import annotations
+
 import functools
 import re
 import zlib
@@ -16,9 +17,7 @@ import snowballstemmer
 _STEMMER = snowballstemmer.stemmer("english")
 _TOKEN = re.compile(r"[a-z0-9]+")
 STOPWORDS = frozenset(
-    "a an and are as at be but by for from had has have he her his i if in into is it its of on or "
-    "she so than that the their them then there these they this to was we were what when where which "
-    "who will with would you your".split()
+    ["a", "an", "and", "are", "as", "at", "be", "but", "by", "for", "from", "had", "has", "have", "he", "her", "his", "i", "if", "in", "into", "is", "it", "its", "of", "on", "or", "she", "so", "than", "that", "the", "their", "them", "then", "there", "these", "they", "this", "to", "was", "we", "were", "what", "when", "where", "which", "who", "will", "with", "would", "you", "your"]
 )
 
 

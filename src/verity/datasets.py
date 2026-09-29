@@ -7,6 +7,7 @@
   `python -m verity.datasets --peek`.
 """
 from __future__ import annotations
+
 import hashlib
 import random
 import re
@@ -48,7 +49,15 @@ def build_demo_corpus(target: int = 100_000, seed: int = 42) -> list[dict]:
                 nltk.data.find(f"tokenizers/{rsrc}")
             except LookupError:
                 nltk.download(rsrc)
-    from nltk.corpus import brown, gutenberg, inaugural, movie_reviews, reuters, state_union, webtext
+    from nltk.corpus import (
+        brown,
+        gutenberg,
+        inaugural,
+        movie_reviews,
+        reuters,
+        state_union,
+        webtext,
+    )
     sources = [("literature", gutenberg), ("news", reuters), ("reviews", movie_reviews), ("web", webtext),
                ("speeches", inaugural), ("speeches", state_union), ("mixed", brown)]
     seen, out = set(), []

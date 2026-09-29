@@ -1,9 +1,11 @@
 """Thin Qdrant wrapper: collection design, payload indexes, upsert/delete, pre-retrieval filters."""
 from __future__ import annotations
+
 import time
 import uuid
 
 from qdrant_client import QdrantClient, models
+from qdrant_client.http.exceptions import ResponseHandlingException, UnexpectedResponse
 
 NS = uuid.UUID("6f1c2a52-5d3b-4d8e-9a55-0a1f4c2e7b10")
 
@@ -92,6 +94,6 @@ class Store:
         try:
             out["categories"] = {h.value: h.count for h in
                                  self.client.facet(self.collection, key="category", limit=30).hits}
-        except Exception:
+        except (ResponseHandlingException, UnexpectedResponse):
             pass
         return out

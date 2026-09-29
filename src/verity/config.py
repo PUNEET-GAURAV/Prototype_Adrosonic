@@ -1,7 +1,9 @@
 """Configuration loading: YAML file, overridable by environment variables."""
 from __future__ import annotations
+
 import os
 from pathlib import Path
+
 import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
