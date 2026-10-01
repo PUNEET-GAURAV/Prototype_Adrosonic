@@ -24,23 +24,23 @@ def start_backend():
         for _ in range(60):
             if proc.poll() is not None:
                 err = proc.stderr.read().decode()
-                print(f"Backend failed to start: {err}")
-                break
+                return f"Backend failed to start: {err}"
             if is_port_in_use(8000):
-                print("FastAPI backend started successfully.")
-                break
+                return "OK"
             time.sleep(1)
-        else:
-            print("Warning: FastAPI backend did not start in time.")
+        return "Backend did not start in 60 seconds. It might still be loading."
     else:
-        print("FastAPI backend is already running on port 8000.")
-    return True
+        return "OK"
 
-start_backend()
+backend_status = start_backend()
 
 st.set_page_config(page_title="Verity-RAG Judge Demo", layout="wide")
 
 st.title("Verity-RAG Judge Demo")
+if backend_status != "OK":
+    st.error(f"⚠️ Backend Status: {backend_status}")
+    st.info("Check the Streamlit Cloud logs (bottom right icon -> Manage app) for more details.")
+
 st.write("Compare Dense and Hybrid retrieval side-by-side.")
 
 query = st.text_input("Enter a search query:", value="What is the capital of France?")
