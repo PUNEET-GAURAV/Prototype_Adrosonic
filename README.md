@@ -1,3 +1,12 @@
+---
+title: Verity RAG Prototype
+emoji: 🚀
+colorFrom: blue
+colorTo: indigo
+sdk: streamlit
+app_file: app.py
+pinned: false
+---
 # Verity-RAG (prototype)
 
 Hybrid (dense + BM25) precision retrieval on **Qdrant**, built for the ADROSONIC BUILD problem
