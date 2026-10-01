@@ -1,0 +1,33 @@
+{
+  "dataset": "demo",
+  "n": 100,
+  "encoder": "LSA-100 (offline fallback)",
+  "dim": 100,
+  "avg_len": 34.31,
+  "k": 1.5,
+  "b": 0.75,
+  "collection": "verity",
+  "timings_s": {
+    "corpus": 172.11,
+    "bm25_avg_len": 0.14,
+    "encoder_fit_or_load": 0.16,
+    "encode_docs": 0.01,
+    "upsert": 1.12,
+    "wait_index_green": 0.0,
+    "total_ingest": 1.14
+  },
+  "qdrant": {
+    "points": 100,
+    "status": "green",
+    "indexed_vectors": 0,
+    "categories": {
+      "literature": 33,
+      "news": 22,
+      "reviews": 19,
+      "mixed": 17,
+      "web": 5,
+      "speeches": 4
+    }
+  },
+  "built_at": 1790715225
+}

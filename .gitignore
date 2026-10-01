@@ -3,6 +3,5 @@ __pycache__/
 .venv/
 qdrant_storage/.lock
 .env
-data/
 *.pptx
 build_out*.txt
