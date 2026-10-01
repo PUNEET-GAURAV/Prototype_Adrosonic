@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: verity-rag-prototype
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "streamlit run src/verity/ui/app.py --server.port $PORT"
+    plan: standard
+    envVars:
+      - key: PYTHONPATH
+        value: src
